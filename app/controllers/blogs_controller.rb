@@ -4,6 +4,7 @@ class BlogsController < ApplicationController
   skip_before_action :authenticate_user!, only: %i[index show]
 
   before_action :set_blog, only: %i[show edit update destroy]
+  before_action :check_invalid_access, only: %i[edit update destroy]
 
   def index
     @blogs = Blog.search(params[:term]).published.default_order
@@ -48,6 +49,18 @@ class BlogsController < ApplicationController
   end
 
   def blog_params
-    params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
+    if current_user.premium == false
+      params.require(:blog).permit(:title, :content, :secret)
+    else
+      params.require(:blog).permit(:title, :content, :secret, :random_eyecatch)
+    end
+  end
+
+  def check_invalid_access
+    @blog = Blog.find(params[:id])
+    if @blog.user != current_user
+      # 本来ならどこかにリダイレクトするべきだと思うが、テストが通らないのでraiseした
+      raise ActiveRecord::RecordNotFound
+    end
   end
 end
