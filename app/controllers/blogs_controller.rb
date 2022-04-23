@@ -58,9 +58,7 @@ class BlogsController < ApplicationController
 
   def check_invalid_access
     @blog = Blog.find(params[:id])
-    if @blog.user != current_user
-      # 本来ならどこかにリダイレクトするべきだと思うが、テストが通らないのでraiseした
-      raise ActiveRecord::RecordNotFound
-    end
+    # 本来ならどこかにリダイレクトするべきだと思うが、テストが通らないのでraiseした
+    raise ActiveRecord::RecordNotFound if @blog.user != current_user
   end
 end
