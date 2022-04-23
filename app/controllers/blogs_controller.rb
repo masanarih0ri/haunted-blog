@@ -10,7 +10,9 @@ class BlogsController < ApplicationController
     @blogs = Blog.search(params[:term]).published.default_order
   end
 
-  def show; end
+  def show
+    raise ActiveRecord::RecordNotFound if (secret_blog? && @blog.user != current_user) || (secret_blog? && !user_signed_in?)
+  end
 
   def new
     @blog = Blog.new
@@ -60,5 +62,9 @@ class BlogsController < ApplicationController
     @blog = Blog.find(params[:id])
     # 本来ならどこかにリダイレクトするべきだと思うが、テストが通らないのでraiseした
     raise ActiveRecord::RecordNotFound if @blog.user != current_user
+  end
+
+  def secret_blog?
+    @blog.secret?
   end
 end
