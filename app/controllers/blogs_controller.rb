@@ -11,7 +11,11 @@ class BlogsController < ApplicationController
   end
 
   def show
-    @blog = Blog.published.find(params[:id])
+    if @blog.user == current_user
+      @blog
+    else
+      @blog = Blog.published.find(params[:id])
+    end
   end
 
   def new
