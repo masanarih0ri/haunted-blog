@@ -15,6 +15,14 @@ class Blog < ApplicationRecord
 
   scope :default_order, -> { order(id: :desc) }
 
+  def self.accessible(current_user)
+    if current_user
+      current_user.blogs.or(Blog.published)
+    else
+      Blog.published
+    end
+  end
+
   def owned_by?(target_user)
     user == target_user
   end
