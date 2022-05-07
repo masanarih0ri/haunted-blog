@@ -11,7 +11,7 @@ class BlogsController < ApplicationController
   end
 
   def show
-    @blog = Blog.accessible(current_user).find(params[:id])
+    @blog = Blog.accessible_by(current_user).find(params[:id])
   end
 
   def new

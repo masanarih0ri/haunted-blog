@@ -15,7 +15,7 @@ class Blog < ApplicationRecord
 
   scope :default_order, -> { order(id: :desc) }
 
-  def self.accessible(current_user)
+  def self.accessible_by(current_user)
     if current_user
       current_user.blogs.or(Blog.published)
     else
